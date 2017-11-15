@@ -148,7 +148,20 @@
 
     for (EKRelationshipMapping *relationship in mapping.hasOneMappings)
     {
-        id oneMappingRepresentation = [rootRepresentation valueForKeyPath:relationship.keyPath];
+        id oneMappingRepresentation = nil;
+        if (relationship.keyPath.length) {
+            oneMappingRepresentation = [rootRepresentation valueForKeyPath:relationship.keyPath];
+        } else if ([representation isKindOfClass:[NSDictionary class]]
+                   && relationship.nonNestedKeyPaths.count) {
+            NSMutableDictionary *nonNestedRepresentation = [[NSMutableDictionary alloc] init];
+            for (NSString *keyPath in relationship.nonNestedKeyPaths) {
+                nonNestedRepresentation[keyPath] = [representation valueForKeyPath:keyPath];
+            }
+            if (nonNestedRepresentation.count) {
+                oneMappingRepresentation = [nonNestedRepresentation copy];
+            }
+        }
+
         if (oneMappingRepresentation && ![oneMappingRepresentation isEqual:[NSNull null]])
         {
             // This is needed, because if one of the objects in array does not contain object for key, returned structure would be something like this:
