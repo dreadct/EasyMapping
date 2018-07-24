@@ -160,6 +160,17 @@
             if (nonNestedRepresentation.count) {
                 oneMappingRepresentation = [nonNestedRepresentation copy];
             }
+        } else if ([representation isKindOfClass:[NSArray class]]
+                   && relationship.nonNestedKeyPaths.count) {
+            for (NSDictionary * representationObjectInfo in representation) {
+                NSMutableDictionary *nonNestedRepresentation = [[NSMutableDictionary alloc] init];
+                for (NSString *keyPath in relationship.nonNestedKeyPaths) {
+                    nonNestedRepresentation[keyPath] = [representationObjectInfo valueForKeyPath:keyPath];
+                }
+                if (nonNestedRepresentation.count) {
+                    oneMappingRepresentation = [nonNestedRepresentation copy];
+                }
+            }
         }
 
         if (oneMappingRepresentation && ![oneMappingRepresentation isEqual:[NSNull null]])
