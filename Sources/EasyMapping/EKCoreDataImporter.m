@@ -162,15 +162,17 @@
             }
         } else if ([representation isKindOfClass:[NSArray class]]
                    && relationship.nonNestedKeyPaths.count) {
+            NSMutableArray *arrayRepresentation = [NSMutableArray array];
             for (NSDictionary * representationObjectInfo in representation) {
                 NSMutableDictionary *nonNestedRepresentation = [[NSMutableDictionary alloc] init];
                 for (NSString *keyPath in relationship.nonNestedKeyPaths) {
                     nonNestedRepresentation[keyPath] = [representationObjectInfo valueForKeyPath:keyPath];
                 }
                 if (nonNestedRepresentation.count) {
-                    oneMappingRepresentation = [nonNestedRepresentation copy];
+                    [arrayRepresentation addObject:nonNestedRepresentation];
                 }
             }
+            oneMappingRepresentation = arrayRepresentation;
         }
 
         if (oneMappingRepresentation && ![oneMappingRepresentation isEqual:[NSNull null]])
